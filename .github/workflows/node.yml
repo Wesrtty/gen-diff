@@ -1,0 +1,28 @@
+name: Node JS
+on: push
+jobs:
+
+  build-cli:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, macos-latest,  ]
+        
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16.x'
+          cache: 'npm'
+      - name: build
+        run: make setup
+
+  test:
+    if: ${{ always() }}
+    needs: build-cli
+    
+    steps:
+      - run: make test
+  lint:
+    steps:
+      - run: make lint

@@ -10,3 +10,5 @@ test:
 	npm test
 test-coverage:
 	npx jest --coverage
+say-hello:
+	echo "Hello, world!"
