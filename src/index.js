@@ -1,35 +1,29 @@
-import { readFile, toJson } from './fs/fileSystem.js';
+import path from 'path';
+import {
+  getContentFileInJsonFormat, isValidFile, getContensDir, findFilePathByName,
+} from './utils.js';
+import difference from './difference.js';
 import stringify from './stringify.js';
 
-const diff = (json1, json2) => {
-  const keys = Object.keys({ ...json1, ...json2 });
-  const uniqSort = keys.filter((key, index) => keys.indexOf(key) === index);
-  const sortKeys = uniqSort.sort();
+export default (filename1, filename2) => {
+  if (!isValidFile(filename1) || !isValidFile(filename2)) {
+    return 'File is not valid.';
+  }
 
-  return sortKeys.reduce(
-    (acc, key) => {
-      const value1 = json1[key];
-      const value2 = json2[key];
+  const currentDir = path.resolve();
+  const memo = getContensDir(currentDir);
 
-      if (value1 === value2) {
-        acc.push({ sign: ' ', key: key, value: value1 });
-      } else if (!json2.hasOwnProperty(key)) {
-        acc.push({ sign: '-', key: key, value: value1 });
-      } else if (!json1.hasOwnProperty(key)) {
-        acc.push({ sign: '+', key: key, value: value2 });
-      } else if (value1 !== value2) {
-        acc.push({ sign: '-', key: key, value: value1 }, { sign: '+', key: key, value: value2 });
-      }
+  const [filepath1] = findFilePathByName(memo, filename1);
+  const [filepath2] = findFilePathByName(memo, filename2);
 
-      return acc;
-    },
-    [],
-  );
-};
+  if (!filepath1 || !filepath2) {
+    return 'File not found.';
+  }
 
-export default (filepath1, filepath2) => {
-  const content1 = toJson(readFile(filepath1));
-  const content2 = toJson(readFile(filepath2));
+  const content1 = getContentFileInJsonFormat(filepath1);
+  const content2 = getContentFileInJsonFormat(filepath2);
 
-  return stringify(diff(content1, content2));
+  const diff = difference(content1, content2);
+
+  return stringify(diff, ' ', 2);
 };
