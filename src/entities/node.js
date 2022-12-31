@@ -1,1 +1,3 @@
-export const makeNode = (key, value, sign = ' ') => ({ key, value, sign });
+const makeNode = (key, value, sign = ' ') => ({ key, value, sign });
+
+export default makeNode;

@@ -1,4 +1,4 @@
-import { makeNode } from './entities/node.js';
+import makeNode from './entities/node.js';
 
 export default (obj1, obj2) => {
   const keys = Object.keys({ ...obj1, ...obj2 }).sort();
