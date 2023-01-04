@@ -1,3 +1,3 @@
-const buildJson = (data) => data;;
+const buildJson = (data) => data;
 
 export default buildJson;
