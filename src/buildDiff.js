@@ -1,9 +1,10 @@
+import _ from 'lodash';
 import { makeNode, makeNodeLeaf, makeNodeInternal } from './entities/node.js';
 
 const isObject = (value) => (typeof value === 'object' && !Array.isArray(value) && value !== null);
 
 const buildDiff = (obj1, obj2 = {}) => {
-  const uniqKeys = Object.keys({ ...obj1, ...obj2 }).sort();
+  const uniqKeys = _.sortBy(Object.keys({ ...obj1, ...obj2 }));
   return uniqKeys.map((key) => {
     const value1 = obj1[key];
     const value2 = obj2[key];
@@ -12,11 +13,11 @@ const buildDiff = (obj1, obj2 = {}) => {
       return makeNodeInternal(key, 'unchanged', buildDiff(value1, value2));
     }
 
-    if (!obj2.hasOwnProperty(key)) {
+    if (!_.has(obj2, key)) {
       return makeNode(key, 'deleted', value1);
     }
 
-    if (!obj1.hasOwnProperty(key)) {
+    if (!_.has(obj1, key)) {
       return makeNode(key, 'added', value2);
     }
 
