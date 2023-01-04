@@ -1,3 +1,3 @@
-const buildJson = (data) => JSON.parse(JSON.stringify(data));
+const buildJson = (data) => data;;
 
 export default buildJson;
