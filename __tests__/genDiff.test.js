@@ -15,17 +15,10 @@ describe('genDiff', () => {
     [undefined, 'stylishOutput.txt'],
     ['stylish', 'stylishOutput.txt'],
     ['plain', 'plainOutput.txt'],
+    ['json', 'jsonOutput.txt'],
   ])('get difference between files in %s format', (format, output) => {
     const diff = genDiff(filepath1, filepath2, format);
     const expectedResult = readFile(output);
-
-    expect(diff).toEqual(expectedResult);
-  });
-
-  test('get difference between files in json format', () => {
-    const diff = genDiff(filepath1, filepath2, 'json');
-    const content = readFile('jsonOutput.json');
-    const expectedResult = JSON.parse(content);
 
     expect(diff).toEqual(expectedResult);
   });
