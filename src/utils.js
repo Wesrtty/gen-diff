@@ -1,49 +1,22 @@
 import fs from 'fs';
-import path from 'path';
-import * as file from './entities/file.js';
-import * as directory from './entities/directory.js';
+import parse from './parsers/index.js';
 
-const isValidFile = (filename) => typeof filename === 'string'
-    && ['.json'].includes(path.extname(filename));
+const isObject = (value) => (typeof value === 'object' && !Array.isArray(value) && value !== null);
 
-const getContensDir = (dirpath) => {
-  const stat = fs.statSync(dirpath);
-  const name = path.basename(dirpath);
+const isRelativePath = (filepath) => filepath[0] === '/';
 
-  if (stat.isFile()) {
-    return file.makeFile(name, dirpath);
-  }
+const getAbsolutePath = (filepath) => [process.cwd(), filepath].join('/');
 
-  const children = fs.readdirSync(dirpath)
-    .map((documentName) => path.join(dirpath, documentName))
-    .map((documentPath) => getContensDir(documentPath));
-
-  return directory.makeDirectory(name, children, dirpath);
-};
-
-const findFilePathByName = (tree, filename) => {
-  const iter = (node) => {
-    if (file.isFile(node)) {
-      return file.getName(node) === filename ? file.getPath(node) : [];
-    }
-
-    return directory
-      .getChildren(node)
-      .flatMap(iter);
-  };
-  return iter(tree);
-};
+const isExistFile = (filepath) => fs.existsSync(filepath);
 
 const readFile = (filepath) => fs.readFileSync(filepath, { encoding: 'utf-8' });
 
-const getContentFileInJsonFormat = (filepath) => {
-  const content = readFile(filepath) || '{}';
-  return JSON.parse(content);
+const getExtensionFile = (filepath) => filepath.split('.').pop();
+
+const getContentFile = (filepath) => {
+  const fullFilepath = isRelativePath(filepath) ? filepath : getAbsolutePath(filepath);
+  const content = isExistFile(fullFilepath) ? readFile(fullFilepath) : undefined;
+  return content ? parse(content, getExtensionFile(filepath)) : content;
 };
 
-export {
-  isValidFile,
-  getContensDir,
-  findFilePathByName,
-  getContentFileInJsonFormat,
-};
+export { isObject, getContentFile };

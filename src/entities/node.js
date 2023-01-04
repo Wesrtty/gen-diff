@@ -1,3 +1,7 @@
-const makeNode = (key, value, sign = ' ') => ({ key, value, sign });
+export const makeNodeInternal = (name, status, children) => ({ name, status, children });
 
-export default makeNode;
+export const makeNodeLeaf = (name, status, oldValue, newValue) => ({
+  name, status, oldValue, newValue,
+});
+
+export const makeNode = (name, status, value) => ({ name, status, value });
