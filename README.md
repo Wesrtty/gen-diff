@@ -1,6 +1,5 @@
 # Вычислитель отличий
 
-### Hexlet tests and linter status:
 [![Actions Status](https://github.com/Wesrtty/backend-project-lvl2/workflows/hexlet-check/badge.svg)](https://github.com/Wesrtty/backend-project-lvl2/actions)
 [![Actions Status](https://github.com/Wesrtty/backend-project-lvl2/actions/workflows/test.yml/badge.svg)](https://github.com/Wesrtty/backend-project-lvl2/actions)
 [![Maintainability](https://api.codeclimate.com/v1/badges/d987a0c521c6ee97a574/maintainability)](https://codeclimate.com/github/Wesrtty/backend-project-lvl2/maintainability)
@@ -10,7 +9,7 @@
 
 Вычислитель отличий – программа, определяющая разницу между двумя структурами данных. Это популярная задача, для решения которой существует множество онлайн сервисов, например http://www.jsondiff.com/. Подобный механизм используется при выводе тестов или при автоматическом отслеживании изменении в конфигурационных файлах.
 
-### Возможности утилиты:
+## Возможности утилиты:
 
 Поддержка разных входных форматов: `yaml`, `json`.
 
