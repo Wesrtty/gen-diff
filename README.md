@@ -21,7 +21,7 @@ make install
 ```
 
 ## Пример использования
-```
+```bash
 gendiff -h
 Usage: gendiff [options] <filepath1> <filepath2>
 
@@ -38,7 +38,7 @@ Options:
 ```
 
 Формат: `plain`
-```
+```bash
 gendiff --format plain path/to/file.yml another/path/file.json
 
 Property 'common.follow' was added with value: false
@@ -47,7 +47,7 @@ Property 'group2' was removed
 ```
 
 Формат: `stylish`
-```
+```bash
 gendiff filepath1.json filepath2.json
 
 {
