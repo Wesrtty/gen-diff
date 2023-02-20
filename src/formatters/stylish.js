@@ -1,6 +1,4 @@
 import { isObject } from '../utils.js';
-import statuses from '../entities/statuses.js';
-import { getName, getChildren, getStatus, getOldValue, getNewValue, getValue } from '../entities/node.js';
 
 const replacer = ' ';
 const spacesCount = 4;
@@ -29,32 +27,36 @@ const stringify = (value, depth) => {
   return ['{', ...lines, `${bracketIndent}}`].join('\n');
 };
 
-export default (tree) => {
+const buildStylish = (tree) => {
   const iter = (nodes, depth = 1) => {
-    const buildNesting = (children, value) => children ? iter(children, depth + 1) : stringify(value, depth + 1);
+    const buildNesting = (children, value) => (children
+      ? iter(children, depth + 1)
+      : stringify(value, depth + 1));
 
     const indent = getdIndent(depth);
     const bracketIndent = getBracketIndent(depth);
 
     const lines = nodes.flatMap((node) => {
-      const name = getName(node);
-      const status = getStatus(node);
-      const values = buildNesting(getChildren(node), getValue(node));
+      const {
+        name, status, children, value,
+      } = node;
+
+      const values = buildNesting(children, value);
 
       switch (status) {
-        case statuses.unchanged:
+        case 'unchanged':
           return buildLine(indent, ' ', name, values);
 
-        case statuses.deleted:
+        case 'deleted':
           return buildLine(indent, '-', name, values);
 
-        case statuses.added:
+        case 'added':
           return buildLine(indent, '+', name, values);
 
-        case statuses.modified:
+        case 'modified':
           return [
-            buildLine(indent, '-', name, stringify(getOldValue(node), depth + 1)),
-            buildLine(indent, '+', name, stringify(getNewValue(node), depth + 1)),
+            buildLine(indent, '-', name, stringify(node.oldValue, depth + 1)),
+            buildLine(indent, '+', name, stringify(node.newValue, depth + 1)),
           ];
 
         default:
@@ -67,3 +69,5 @@ export default (tree) => {
 
   return iter(tree);
 };
+
+export default buildStylish;

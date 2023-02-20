@@ -1,35 +1,31 @@
 import { isObject } from '../utils.js';
-import statuses from '../entities/statuses.js';
-import { getPath } from '../entities/file.js';
-import { getChildren, getName, getNewValue, getOldValue, getStatus, getValue } from '../entities/node.js';
 
 const buildFormatValue = (value) => {
   if (isObject(value)) return '[complex value]';
   return typeof value === 'string' ? `'${value}'` : value;
 };
 
-export default (tree) => {
-  const iter = (nodes, currentPath) => {
+const buildPlain = (tree) => {
+  const iter = (nodes, path) => {
     const lines = nodes.flatMap((node) => {
-      const path = getPath(node);
-      const name = getName(node);
-      const status = getStatus(node);
-      const children = getChildren(node);
+      const {
+        name, status, children, value,
+      } = node;
 
-      const propertys = currentPath ? `${currentPath}.${name}` : name;
+      const propertys = path ? `${path}.${name}` : name;
 
       switch (status) {
-        case statuses.unchanged:
+        case 'unchanged':
           return children ? iter(children, propertys) : [];
 
-        case statuses.deleted:
+        case 'deleted':
           return `Property '${propertys}' was removed`;
 
-        case statuses.added:
-          return `Property '${propertys}' was added with value: ${buildFormatValue(getValue(node))}`;
+        case 'added':
+          return `Property '${propertys}' was added with value: ${buildFormatValue(value)}`;
 
-        case statuses.modified:
-          return `Property '${propertys}' was updated. From ${buildFormatValue(getOldValue(node))} to ${buildFormatValue(getNewValue(node))}`;
+        case 'modified':
+          return `Property '${propertys}' was updated. From ${buildFormatValue(node.oldValue)} to ${buildFormatValue(node.newValue)}`;
 
         default:
           throw new Error(`Unknown status: ${status}.`);
@@ -41,3 +37,5 @@ export default (tree) => {
 
   return iter(tree, '');
 };
+
+export default buildPlain;

@@ -3,34 +3,38 @@ import fs from 'fs';
 import path from 'path';
 import genDiff from '../src/index.js';
 
-const readFile = (fileName) => {
-  const filePath = path.join(path.resolve(), '__fixtures__', fileName);
-  return fs.readFileSync(filePath, { encoding: 'utf-8' });
-};
+const getFixturePath = (filename) => path.join(path.resolve(), '__fixtures__', filename);
 
-const firstLetterToUppercase = (str) => str.charAt(0).toUpperCase() + str.slice(1);
-
-const jsonFilePath1 = '__fixtures__/file1.json';
-const jsonFilePath2 = '__fixtures__/file2.json';
-const yamlFilePath = '__fixtures__/file2.yaml';
-
-const formats = [ 'stylish', 'plain', 'json' ];
+const readFile = (filename) => fs.readFileSync(getFixturePath(filename), { encoding: 'utf-8' });
 
 describe('genDiff', () => {
-  test('should return difference between json files in default format', () => {
-    const report = genDiff(jsonFilePath1, jsonFilePath2);
+  const filepath1 = '__fixtures__/file1.json';
+  const filepath2 = '__fixtures__/file2.yaml';
 
-    expect(report).toEqual(readFile('./results/reportStylish.txt'));
+  test.each([
+    [undefined, 'stylishOutput.txt'],
+    ['stylish', 'stylishOutput.txt'],
+    ['plain', 'plainOutput.txt'],
+    ['json', 'jsonOutput.txt'],
+  ])('get difference between files in %s format', (format, output) => {
+    const diff = genDiff(filepath1, filepath2, format);
+    const expectedResult = readFile(output);
+
+    expect(diff).toEqual(expectedResult);
   });
 
-  test.each(formats)
-  ('should return difference between json and yaml files in %s format', (format) => {
-    const report = genDiff(jsonFilePath1, yamlFilePath, format);
+  test.each([
+    ['file1.json', '__fixtures__/file2.yaml'],
+    ['__fixtures__/file1.json', 'file2.yaml'],
+    ['__fixtures__/file1.json', '__fixtures/file2.yaml'],
+    ['__fixtures__/file1.json', '__fixtures__/file2.txt'],
+  ])('Get error - file not found', (filename1, filename2) => {
+    const errorMessage = genDiff(filename1, filename2);
 
-    expect(report).toEqual(readFile(`./results/report${firstLetterToUppercase(format)}.txt`));
+    expect(errorMessage).toBe('File not found.');
   });
 
-  test('should throw error when file not found', () => {
-    expect(() => genDiff(jsonFilePath1, '12345_name.json')).toThrow();
+  test.each(['txt', 'jsonf', 'yoml'])('get error - output format not supported', (format) => {
+    expect(() => genDiff(filepath1, filepath2, format)).toThrow(`Unknown format: ${format}.`);
   });
 });

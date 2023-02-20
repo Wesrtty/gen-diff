@@ -1,25 +1,23 @@
-import { isAbsolute } from 'path';
-import parseToJSON from './parsers/index.js';
+import path from 'path';
 import fs from 'fs';
-import { getContent, getExtension, makeFile } from './entities/file.js';
+import parse from './parsers/index.js';
 
 const isObject = (value) => (typeof value === 'object' && !Array.isArray(value) && value !== null);
 
-const buildAbsolutePath = (filePath) => [process.cwd(), filePath].join('/');
+const isRelativePath = (filepath) => filepath[0] === '/';
 
-const isExistFile = (filePath) => fs.existsSync(filePath);
+const getAbsolutePath = (filepath) => [process.cwd(), filepath].join('/');
 
-const readFile = (filePath) => fs.readFileSync(filePath, { encoding: 'utf-8' });
+const isExistFile = (filepath) => fs.existsSync(filepath);
 
-const getContentFile = (filePath) => {
-  const absolutePath = isAbsolute(filePath) ? filePath : buildAbsolutePath(filePath);
+const readFile = (filepath) => fs.readFileSync(filepath, { encoding: 'utf-8' });
 
-  if (!isExistFile(absolutePath)) {
-    throw new Error(`File "${absolutePath}" not found`);
-  }
+const getExtensionFile = (filepath) => path.extname(filepath).slice(1);
 
-  const file = makeFile(readFile(absolutePath), absolutePath);
-  return parseToJSON(getContent(file), getExtension(file));
+const getContentFile = (filepath) => {
+  const fullFilepath = isRelativePath(filepath) ? filepath : getAbsolutePath(filepath);
+  const content = isExistFile(fullFilepath) ? readFile(fullFilepath) : undefined;
+  return content ? parse(content, getExtensionFile(filepath)) : content;
 };
 
 export { isObject, getContentFile };
