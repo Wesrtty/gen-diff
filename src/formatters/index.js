@@ -8,12 +8,10 @@ const formatters = {
   json: buildJson,
 };
 
-const buildOuput = (data, format) => {
+export default (data, format) => {
   if (!formatters[format]) {
     throw new Error(`Unknown format: ${format}.`);
   }
 
   return formatters[format](data);
 };
-
-export default buildOuput;

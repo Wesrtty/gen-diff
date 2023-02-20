@@ -18,10 +18,10 @@
   },
   "homepage": "https://github.com/Wesrtty/backend-project-lvl2#readme",
   "devDependencies": {
-    "@babel/core": "^7.20.7",
+    "@babel/core": "^7.20.12",
     "@babel/preset-env": "^7.20.2",
     "@jest/globals": "^29.3.1",
-    "babel-jest": "^29.3.1",
+    "babel-jest": "^29.4.3",
     "eslint": "^8.30.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.26.0",

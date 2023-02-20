@@ -1,3 +1,1 @@
-const buildJson = (data) => JSON.stringify(data, null, 2);
-
-export default buildJson;
+export default (data) => JSON.stringify(data, null, 2);
