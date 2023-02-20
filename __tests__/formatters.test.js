@@ -1,5 +1,5 @@
 import {
-  beforeAll, describe, expect, test,
+  describe, expect, test,
 } from '@jest/globals';
 import fs from 'fs';
 import path from 'path';
@@ -20,11 +20,7 @@ const readFile = (fileName) => {
 const firstLetterToUppercase = (str) => str.charAt(0).toUpperCase() + str.slice(1);
 
 describe('build report', () => {
-  let obj;
-
-  beforeAll(() => {
-    obj = JSON.parse(readFile('./results/differenceBetweenFiles.json'));
-  });
+  const obj = JSON.parse(readFile('./results/differenceBetweenFiles.json'));
 
   test.each(formats)('should return report in $format format', ({ format }) => {
     const expected = readFile(`./results/report${firstLetterToUppercase(format)}.txt`);
