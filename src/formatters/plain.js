@@ -1,7 +1,8 @@
 import { isObject } from '../utils.js';
 import statuses from '../entities/statuses.js';
-import { getPath } from '../entities/file.js';
-import { getChildren, getName, getNewValue, getOldValue, getStatus, getValue } from '../entities/node.js';
+import {
+  getChildren, getName, getNewValue, getOldValue, getStatus, getValue,
+} from '../entities/node.js';
 
 const buildFormatValue = (value) => {
   if (isObject(value)) return '[complex value]';
@@ -11,7 +12,6 @@ const buildFormatValue = (value) => {
 export default (tree) => {
   const iter = (nodes, currentPath) => {
     const lines = nodes.flatMap((node) => {
-      const path = getPath(node);
       const name = getName(node);
       const status = getStatus(node);
       const children = getChildren(node);

@@ -1,6 +1,6 @@
 import { isAbsolute } from 'path';
-import parseToJSON from './parsers/index.js';
 import fs from 'fs';
+import parseToJSON from './parsers/index.js';
 import { getContent, getExtension, makeFile } from './entities/file.js';
 
 const isObject = (value) => (typeof value === 'object' && !Array.isArray(value) && value !== null);

@@ -1,6 +1,8 @@
 import { isObject } from '../utils.js';
 import statuses from '../entities/statuses.js';
-import { getName, getChildren, getStatus, getOldValue, getNewValue, getValue } from '../entities/node.js';
+import {
+  getName, getChildren, getStatus, getOldValue, getNewValue, getValue,
+} from '../entities/node.js';
 
 const replacer = ' ';
 const spacesCount = 4;
@@ -31,7 +33,9 @@ const stringify = (value, depth) => {
 
 export default (tree) => {
   const iter = (nodes, depth = 1) => {
-    const buildNesting = (children, value) => children ? iter(children, depth + 1) : stringify(value, depth + 1);
+    const buildNesting = (children, value) => (children
+      ? iter(children, depth + 1)
+      : stringify(value, depth + 1));
 
     const indent = getdIndent(depth);
     const bracketIndent = getBracketIndent(depth);

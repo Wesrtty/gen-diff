@@ -14,7 +14,7 @@ const jsonFilePath1 = '__fixtures__/file1.json';
 const jsonFilePath2 = '__fixtures__/file2.json';
 const yamlFilePath = '__fixtures__/file2.yaml';
 
-const formats = [ 'stylish', 'plain', 'json' ];
+const formats = ['stylish', 'plain', 'json'];
 
 describe('genDiff', () => {
   test('should return difference between json files in default format', () => {
@@ -23,8 +23,7 @@ describe('genDiff', () => {
     expect(report).toEqual(readFile('./results/reportStylish.txt'));
   });
 
-  test.each(formats)
-  ('should return difference between json and yaml files in %s format', (format) => {
+  test.each(formats)('should return difference between json and yaml files in %s format', (format) => {
     const report = genDiff(jsonFilePath1, yamlFilePath, format);
 
     expect(report).toEqual(readFile(`./results/report${firstLetterToUppercase(format)}.txt`));
