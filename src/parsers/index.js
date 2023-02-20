@@ -7,12 +7,10 @@ const parsers = {
   yaml: parseYaml,
 };
 
-const parse = (data, format) => {
+export default (data, format) => {
   if (!parsers[format]) {
     throw new Error(`Unknown format: ${format}.`);
   }
 
   return parsers[format](data);
 };
-
-export default parse;
