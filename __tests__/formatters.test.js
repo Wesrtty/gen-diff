@@ -1,6 +1,4 @@
-import {
-  beforeAll, describe, expect, test,
-} from '@jest/globals';
+import { describe, expect, test } from '@jest/globals';
 import fs from 'fs';
 import path from 'path';
 import buildOutputFormat from '../src/formatters/index.js';
@@ -19,12 +17,8 @@ const readFile = (fileName) => {
 const firstLetterToUppercase = (str) => str.charAt(0).toUpperCase() + str.slice(1);
 
 describe('build report', () => {
-  let diffObjects;
-
-  beforeAll(() => {
-    const pathToFile = './results/differenceBetweenFiles.json';
-    diffObjects = JSON.parse(readFile(pathToFile));
-  });
+  const pathToFile = './results/differenceBetweenFiles.json';
+  const diffObjects = JSON.parse(readFile(pathToFile));
 
   test.each(formats)('should return report in $format format', ({ format }) => {
     const fileName = firstLetterToUppercase(format);
