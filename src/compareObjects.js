@@ -2,16 +2,14 @@ import _ from 'lodash';
 import { makeNode, makeNodeLeaf, makeNodeInternal } from './entities/node.js';
 import statuses from './entities/statuses.js';
 
-const isObject = (value) => (typeof value === 'object' && !Array.isArray(value) && value !== null);
-
-const buildDiff = (obj1, obj2) => {
+const compareObjects = (obj1, obj2) => {
   const uniqKeys = _.sortBy(Object.keys({ ...obj1, ...obj2 }));
   return uniqKeys.map((key) => {
     const value1 = obj1[key];
     const value2 = obj2[key];
 
-    if (isObject(value1) && isObject(value2)) {
-      return makeNodeInternal(key, statuses.unchanged, buildDiff(value1, value2));
+    if (_.isObject(value1) && _.isObject(value2)) {
+      return makeNodeInternal(key, statuses.unchanged, compareObjects(value1, value2));
     }
 
     if (!_.has(obj2, key)) {
@@ -30,4 +28,4 @@ const buildDiff = (obj1, obj2) => {
   });
 };
 
-export default buildDiff;
+export default compareObjects;

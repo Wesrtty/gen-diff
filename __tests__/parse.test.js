@@ -4,15 +4,15 @@ import path from 'path';
 import parse from '../src/parsers/index.js';
 
 const readFile = (fileName) => {
-  const filePath = path.join(path.resolve(), '__fixtures__', fileName);
-  return fs.readFileSync(filePath, { encoding: 'utf-8' });
+  const fullPath = path.resolve(process.cwd(), '__fixtures__', fileName);
+  return fs.readFileSync(fullPath, { encoding: 'utf-8' });
 };
 
-const convertToJSON = (content) => JSON.parse(JSON.stringify(content));
+const parseToJson = (data) => JSON.parse(JSON.stringify(data));
 
-const isJSON = (content) => {
+const isJSON = (data) => {
   try {
-    convertToJSON(content);
+    parseToJson(data);
   } catch {
     return false;
   }
@@ -22,21 +22,21 @@ const isJSON = (content) => {
 
 describe('parsers', () => {
   test.each([
-    { filePath: 'file1.json', format: 'json' },
-    { filePath: 'file2.yaml', format: 'yaml' },
-    { filePath: 'file2.yaml', format: 'yml' },
-  ])('should parse to json from $format', ({ filePath, format }) => {
-    const content = parse(readFile(filePath), format);
+    { pathToFile: 'file1.json', format: 'json' },
+    { pathToFile: 'file2.yaml', format: 'yaml' },
+    { pathToFile: 'file2.yaml', format: 'yml' },
+  ])('should parse to json from $format', ({ pathToFile, format }) => {
+    const content = parse(readFile(pathToFile), format);
 
     expect(isJSON(content)).toBeTruthy();
-    expect(content).toEqual(convertToJSON(content));
+    expect(content).toEqual(parseToJson(content));
   });
 
   test.each(['json', 'yaml', 'yml'])('should parse empty to json from %s', (format) => {
     const content = parse(null, format);
 
     expect(isJSON(content)).toBeTruthy();
-    expect(content).toEqual(convertToJSON(content));
+    expect(content).toEqual(parseToJson(content));
   });
 
   test('should throw error when parse unknown format', () => {
