@@ -1,43 +1,52 @@
 import {
-  describe, expect, test,
+  beforeAll, describe, expect, test,
 } from '@jest/globals';
 import fs from 'fs';
 import path from 'path';
-import buildReport from '../src/formatters/index.js';
-import { makeNode } from '../src/entities/node.js';
+import buildOutputFormat from '../src/formatters/index.js';
 
 const formats = [
-  { format: 'stylish', expected: '{\n}' },
-  { format: 'plain', expected: '' },
-  { format: 'json', expected: '[]' },
+  { format: 'stylish', expectedValue: '{\n}' },
+  { format: 'plain', expectedValue: '' },
+  { format: 'json', expectedValue: '[]' },
 ];
 
 const readFile = (fileName) => {
-  const filePath = path.join(path.resolve(), '__fixtures__', fileName);
-  return fs.readFileSync(filePath, { encoding: 'utf-8' });
+  const fullPath = path.resolve(process.cwd(), '__fixtures__', fileName);
+  return fs.readFileSync(fullPath, { encoding: 'utf-8' });
 };
 
 const firstLetterToUppercase = (str) => str.charAt(0).toUpperCase() + str.slice(1);
 
 describe('build report', () => {
-  const obj = JSON.parse(readFile('./results/differenceBetweenFiles.json'));
+  let diffObjects;
 
-  test.each(formats)('should return report in $format format', ({ format }) => {
-    const expected = readFile(`./results/report${firstLetterToUppercase(format)}.txt`);
-
-    const report = buildReport(obj, format);
-    expect(report).toBe(expected);
+  beforeAll(() => {
+    const pathToFile = './results/differenceBetweenFiles.json';
+    diffObjects = JSON.parse(readFile(pathToFile));
   });
 
-  test.each(formats)('should return report from empty data in $format format', ({ format, expected }) => {
-    expect(buildReport([], format)).toBe(expected);
+  test.each(formats)('should return report in $format format', ({ format }) => {
+    const fileName = firstLetterToUppercase(format);
+    const expectedValue = readFile(`./results/report${fileName}.txt`);
+
+    const actualValue = buildOutputFormat(diffObjects, format);
+    expect(actualValue).toBe(expectedValue);
+  });
+
+  test.each(formats)('should return report from empty data in $format format', ({ format, expectedValue }) => {
+    const actualValue = buildOutputFormat([], format);
+    expect(actualValue).toBe(expectedValue);
   });
 
   test('should throw error when build report in unknown format', () => {
-    expect(() => buildReport({}, 'randon_name')).toThrow();
+    expect(() => buildOutputFormat({}, 'randon_name')).toThrow();
   });
 
   test.each(formats.filter(({ format }) => format !== 'json'))('should throw error when build report if node status is unknown', ({ format }) => {
-    expect(() => buildReport([makeNode('key', 'random_1234', 'value')], format)).toThrow();
+    const diffObjectsError = [
+      { key: 'key', status: 'random_1234', value: 'value' },
+    ];
+    expect(() => buildOutputFormat(diffObjectsError, format)).toThrow();
   });
 });

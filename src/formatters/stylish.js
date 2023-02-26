@@ -1,4 +1,4 @@
-import { isObject } from '../utils.js';
+import _ from 'lodash';
 import statuses from '../entities/statuses.js';
 import {
   getName, getChildren, getStatus, getOldValue, getNewValue, getValue,
@@ -14,7 +14,7 @@ const getdIndent = (depth) => replacer.repeat(depth * spacesCount - 2);
 const getBracketIndent = (depth) => replacer.repeat(depth * spacesCount - spacesCount);
 
 const stringify = (value, depth) => {
-  if (!isObject(value)) {
+  if (!_.isObject(value)) {
     return `${value}`;
   }
 

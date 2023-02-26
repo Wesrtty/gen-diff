@@ -1,11 +1,11 @@
-import { isObject } from '../utils.js';
+import _ from 'lodash';
 import statuses from '../entities/statuses.js';
 import {
   getChildren, getName, getNewValue, getOldValue, getStatus, getValue,
 } from '../entities/node.js';
 
 const buildFormatValue = (value) => {
-  if (isObject(value)) return '[complex value]';
+  if (_.isObject(value)) return '[complex value]';
   return typeof value === 'string' ? `'${value}'` : value;
 };
 
